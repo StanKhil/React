@@ -17,11 +17,17 @@ export default function Home() {
 
     return <div className="text-center">
         <h1 className="display-4">Shop</h1>
-        <button className="btn btn-primary" onClick={onPlusClick}>+1</button>
-        <h3>Count: {count}</h3>
-        <button className="btn btn-primary" onClick={onMinusClick}>-1</button>
-        {!!user && <p>Hello, {user.name}</p>}
-        <hr/>
-        <Calc/>
+        <div className="row">
+            <div className="col">
+                 <button className="btn btn-primary" onClick={onPlusClick}>+1</button>
+            <h3>Count: {count}</h3>
+            <button className="btn btn-primary" onClick={onMinusClick}>-1</button>
+            {!!user && <p>Hello, {user.name}</p>}
+            <hr/>
+            </div>
+            <div className="col">
+                <Calc/>
+            </div>
+        </div>
     </div>;
 }
