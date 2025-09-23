@@ -7,13 +7,21 @@ import Privacy from '../pages/privacy/Privacy'
 import './ui/App.css'
 import Layout from './ui/Layout'
 import AppContext from '../features/context/AppContext'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import Base64 from '../shared/base64/Base64'
 
 function App() {
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    const u = token == null ? null : Base64.jwtDecodePayload(token);
+    setUser(u);
+    console.log("user from token", u);
+  },[token]);
   return <>
-  <AppContext.Provider value={ {message: "Hello fromApp!", user, setUser, count, setCount} }>
+  <AppContext.Provider value={ {message: "Hello fromApp!", user, setUser, count, setCount, token, setToken} }>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />} >

@@ -22,7 +22,7 @@ export default function Home() {
                  <button className="btn btn-primary" onClick={onPlusClick}>+1</button>
             <h3>Count: {count}</h3>
             <button className="btn btn-primary" onClick={onMinusClick}>-1</button>
-            {!!user && <p>Hello, {user.name}</p>}
+            {!!user && <p>Hello, {user.Name}</p>}
             <hr/>
             </div>
             <div className="col">
