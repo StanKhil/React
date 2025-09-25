@@ -5,10 +5,11 @@ import Home from '../pages/home/Home'
 import About from '../pages/about/About'
 import Privacy from '../pages/privacy/Privacy'
 import './ui/App.css'
-import Layout from './ui/Layout'
+import Layout from './ui/layout/Layout'
 import AppContext from '../features/context/AppContext'
 import { useEffect, useState } from 'react'
 import Base64 from '../shared/base64/Base64'
+import Intro from '../pages/intro/Intro'
 
 function App() {
   const [user, setUser] = useState(null);
@@ -28,6 +29,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="privacy" element={<Privacy />} />
           <Route path="about" element={<About />} />
+          <Route path="intro" element={<Intro/>} />
         </Route>
       </Routes>
     </BrowserRouter>
