@@ -1,0 +1,23 @@
+[data-in-cart="0"] .in-cart {
+    display: none;
+}
+[data-in-cart="0"] .not-in-cart {
+    display: block;
+}
+ 
+[data-in-cart="1"] .in-cart {
+    display: block;
+}
+[data-in-cart="1"] .not-in-cart {
+    display: none;
+}
+
+.group-link .description {
+  display: none;
+  margin-top: 4px;
+  text-align: center;
+}
+
+.group-link:hover .description {
+  display: block;
+}
