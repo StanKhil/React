@@ -6,8 +6,7 @@ import AppContext from "../../../features/context/AppContext";
 import AuthModal from "./AuthModal";
 
 export default function Layout() {
-    const {user, setToken} = useContext(AppContext);
-    const {count} = useContext(AppContext);
+    const {user, setToken, cart} = useContext(AppContext);
     
     
     return <>
@@ -35,7 +34,10 @@ export default function Layout() {
                         </li>   
                     </ul>
                     <div>  
-                        <span>Cart: {count}</span>
+                        <Link to="/cart" className="btn btn-outline-success me-3">
+                            <i className="bi bi-cart"></i>
+                            <span>{cart.cartItems.length}</span>
+                        </Link>
                         {!!user && <>
 
                             <button type="button" className="btn btn-outline-secondary"

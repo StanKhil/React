@@ -4,55 +4,31 @@ import Base64 from "../../../shared/base64/Base64";
 
 
 export default function AuthModal() {
-    const { setToken } = useContext(AppContext);
+    const { setToken, request, cart } = useContext(AppContext);
     const closeModalRef = useRef();
     const [formState, setFormState] = useState({ login: "", password: "" });
     const [isFormValid, setFormValid] = useState(false);
+    const [error, setError] = useState(false);
 
     function clearForm() {
         setFormState({ login: "", password: "" });
     }
 
-    function showAuthError(message) {
-        const alert = document.getElementById("auth-error");
-        if (!alert) return;
-        alert.textContent = message;
-        alert.classList.remove("d-none", "fade");
-        alert.classList.add("show");
-    }
-
     const authenticate = () => {
-        const credentials = Base64.encode(
-            formState.login + ":" + formState.password
-        );
-
-        fetch("https://localhost:7072/user/login", {
+        console.log(formState.login, formState.password);
+        // RFC 7617 
+        const credentials = Base64.encode(`${formState.login}:${formState.password}`);
+        request("/user/login", {
             method: "GET",
             headers: {
-                Authorization: "Basic " + credentials,
-            },
+                'Authorization': 'Basic ' + credentials
+            }
+        }).then(data => {
+            setToken(data);
+            setError(false);
+            closeModalRef.current.click();
         })
-            .then(async (r) => {
-                if (!r.ok) {
-                    showAuthError("Невірний логін або пароль");
-                    return null;
-                }
-                return r.json();
-            })
-            .then((j) => {
-                if (!j) return;
-                if (j.status === 200) {
-                    const jwt = j.data;
-                    setToken(jwt);
-                    clearForm();
-                    closeModalRef.current.click();
-                } else {
-                    showAuthError(j.errorMessage || "Помилка авторизації");
-                }
-            })
-            .catch(() =>
-                showAuthError("Помилка з'єднання з сервером, спробуйте пізніше")
-            );
+        .catch(_ => setError("Вхід скасовано"));
     };
 
     useEffect(() => {
@@ -109,10 +85,11 @@ export default function AuthModal() {
                                 name="user-password" type="password" className="form-control" placeholder="Пароль" aria-label="Пароль" aria-describedby="user-password-addon"
                             />
                         </div>
-                        <div id="auth-error" className="alert alert-danger d-none" role="alert"></div>
+                        
                     </div>
                     <div className="modal-footer">
-                        <button ref={closeModalRef} type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                        {error && <div className="alert alert-danger flex-grow-1 py-2" role="alert"> {error}</div>}
+                        <button ref={closeModalRef} onClick={clearForm} type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                             Скасувати
                         </button>
                         <button
