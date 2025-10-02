@@ -6,13 +6,21 @@ import Base64 from "../../../shared/base64/Base64";
 export default function AuthModal() {
     const { setToken, request, cart } = useContext(AppContext);
     const closeModalRef = useRef();
+    const modalRef = useRef();
     const [formState, setFormState] = useState({ login: "", password: "" });
     const [isFormValid, setFormValid] = useState(false);
     const [error, setError] = useState(false);
 
     function clearForm() {
+        console.log()
         setFormState({ login: "", password: "" });
+        setError(false);
     }
+
+      useEffect(() => {
+        modalRef.current.addEventListener('hide.bs.modal', clearForm);
+        return () => modalRef.current.removeEventListener('hide.bs.modal', clearForm);
+    }, []);
 
     const authenticate = () => {
         console.log(formState.login, formState.password);
@@ -38,7 +46,7 @@ export default function AuthModal() {
     }, [formState]);
 
     return (
-        <div
+        <div ref={modalRef}
             className="modal fade"
             id="authModal"
             tabIndex="-1"
