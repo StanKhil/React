@@ -2,10 +2,10 @@ import { useContext, useState } from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import AppContext from '../../../features/context/AppContext';
 import AddToCartModal from '../../../features/cart/AddToCartModal';
+import "./ProductCart.css";
 
 
-
-export default function ProductCart({product}){
+export default function ProductCart({product, isAssociation}){
     const {cart, request, updateCart} = useContext(AppContext);
     const isInCart = cart.cartItems.some(ci => ci.productId == product.id);
     const navigate = useNavigate();
@@ -33,7 +33,7 @@ export default function ProductCart({product}){
 
     return <div className="col">
         <Link to={"/product/" + (product.slug || product.id)} className="nav-link h-100">
-            <div className="card h-100">    
+            <div className={"card h-100" + (isAssociation ? " association": "")}>    
         
             <img src={product.imageUrl} className="card-img-top" alt={product.name}/>
             <div className="card-body">
