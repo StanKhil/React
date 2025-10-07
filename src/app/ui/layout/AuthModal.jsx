@@ -11,17 +11,17 @@ export default function AuthModal() {
     const [isFormValid, setFormValid] = useState(false);
     const [error, setError] = useState(false);
 
-    function clearForm() {
+    function onModalClose() {
         console.log()
         setFormState({ login: "", password: "" });
         setError(false);
     }
 
       useEffect(() => {
-        modalRef.current.addEventListener('hide.bs.modal', clearForm);
+        modalRef.current.addEventListener('hide.bs.modal', onModalClose);
         return () =>{ 
             if(modalRef.current)
-                modalRef.current.removeEventListener('hide.bs.modal', clearForm);
+                modalRef.current.removeEventListener('hide.bs.modal', onModalClose);
         }
     }, []);
 
@@ -100,7 +100,7 @@ export default function AuthModal() {
                     </div>
                     <div className="modal-footer">
                         {error && <div className="alert alert-danger flex-grow-1 py-2" role="alert"> {error}</div>}
-                        <button ref={closeModalRef} onClick={clearForm} type="button" className="btn btn-secondary" data-bs-dismiss="modal">
+                        <button ref={closeModalRef} onClick={onModalClose} type="button" className="btn btn-secondary" data-bs-dismiss="modal">
                             Скасувати
                         </button>
                         <button

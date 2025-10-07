@@ -45,13 +45,39 @@ function CartItem({cartItem}) {
     const {request, updateCart, alarm} = useContext(AppContext);
     const changeQuantity = (cnt) => {
         if(cnt + cartItem.quantity <= 0){
-            alarm();
+            alarm({
+                title: "Дія незворотня",
+                message: `Підтверджуєте видалення позиції '${cartItem.product.name}'`,
+                positiveButtonText: "Скасувати",
+                negativeButtonText: "Видалити",
+                icon: "info",
+                buttons: [
+                    {status: "danger", title: "Скасувати"},
+                    {status: "warning", title: "Видалити"},
+                    {status: "secondary", title: "Закрити"},
+                    {status: "1", title: "Закрити"},
+                    {status: "2", title: "Закрити"},
+                    {status: "3", title: "Закрити"},
+                    {status: "4", title: "Закрити"},
+                ]
+            })
+            .then(status => {
+                if(status == "warning"){
+                    request("/api/cart/" + cartItem.productId + "?increment=" + cnt,{
+                        method: "PATCH"
+                    }).then(updateCart)
+                    .catch(alert);
+                }
+            })
+            .catch(() => {
+                console.log("alarm cancelled");
+            });
         }
-        else{
+        else {
             request("/api/cart/" + cartItem.productId + "?increment=" + cnt,{
-            method: "PATCH"
-        }).then(updateCart)
-        .catch(alert);
+                method: "PATCH"
+            }).then(updateCart)
+            .catch(alert);   
         }
         
     };
