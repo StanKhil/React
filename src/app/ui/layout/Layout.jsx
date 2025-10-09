@@ -6,7 +6,7 @@ import AppContext from "../../../features/context/AppContext";
 import AuthModal from "./AuthModal";
 
 export default function Layout() {
-    const {user, setToken, cart} = useContext(AppContext);
+    const {user, setToken, toast, cart} = useContext(AppContext);
     
     
     return <>
@@ -32,6 +32,9 @@ export default function Layout() {
                         <li className="nav-item">
                             <Link className="nav-link text-dark" to="/about">About</Link>
                         </li>   
+                        <li>
+                            <i onClick={() => toast({message : Math.random()})} className="bi bi-fork-knife"></i>
+                        </li> 
                     </ul>
                     <div>  
                         <Link to="/cart" className="btn btn-outline-success me-3">

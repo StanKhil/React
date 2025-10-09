@@ -23,6 +23,7 @@ function App() {
   const [productGroups, setProductsGroups] = useState([]);
   const [cart, setCart] = useState({cartItems: []});
   const [alarmData, setAlarmData] = useState({});
+  const [toastData, setToastData] = useState({});
 
   const request = (url, conf) => new Promise((resolve,reject) => 
   {
@@ -111,8 +112,12 @@ function App() {
       alarmRef.current.click();
     });
 
+    const toast = (data) =>{
+      setToastData(data);
+    }
+
   return <>
-  <AppContext.Provider value={ {alarm, alarmData, request, user, cart, updateCart, token, setToken, productGroups, setCart} }>
+  <AppContext.Provider value={ {toast, alarm, alarmData, request, user, cart, updateCart, token, setToken, productGroups, setCart} }>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />} >
@@ -128,8 +133,88 @@ function App() {
     </BrowserRouter>
     <i style={{display: 'block', width: 0, height:0, position: 'absolute'}} data-bs-toggle="modal" data-bs-target="#alarmModal" ref={alarmRef}></i>
     <Alarm alarmData={alarmData}/>
+    <Toast toastData={toastData}/>
   </AppContext.Provider>
   </> 
 }
+
+function Toast({ toastData }) {
+  const toastShowTime = 2500; // ms
+  const fadeTime = 500; // ms
+
+  const [isToastVisible, setToastVisible] = useState(false);
+  const [opacity, setOpacity] = useState(0);
+  const [queue, setQueue] = useState([]);
+  const [visibleData, setVisibleData] = useState({});
+  const opacityTimeout = useRef(null);
+  const visibilityTimeout = useRef(null);
+
+  useEffect(() => {
+    if (toastData.message) {
+      setQueue((q) => [...q, toastData]);
+    }
+  }, [toastData]);
+
+  useEffect(() => {
+    if (queue.length === 0) return;
+    const nextToast = queue[0];
+
+    if (isToastVisible && nextToast.message === visibleData.message) {
+      restartToast(nextToast);
+      return;
+    }
+
+    if (!isToastVisible) {
+      startToast(nextToast);
+    }
+  }, [queue]);
+
+  const restartToast = (toast) => {
+    clearTimeout(opacityTimeout.current);
+    clearTimeout(visibilityTimeout.current);
+
+    setQueue((q) => q.slice(1));
+
+    setOpacity(0);
+
+    setTimeout(() => startToast(toast), fadeTime);
+  };
+
+  const startToast = (toast) => {
+    clearTimeout(opacityTimeout.current);
+    clearTimeout(visibilityTimeout.current);
+
+    setVisibleData(toast);
+    setToastVisible(true);
+    setOpacity(1);
+
+    opacityTimeout.current = setTimeout(() => setOpacity(0), toastShowTime - fadeTime);
+    visibilityTimeout.current = setTimeout(() => {
+      setToastVisible(false);
+      setQueue((q) => q.slice(1));
+    }, toastShowTime);
+  };
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        bottom: "20px",
+        left: "45vw",
+        borderRadius: "10px",
+        minWidth: "10vw",
+        maxWidth: "25vw",
+        padding: "5px 10px",
+        backgroundColor: "#888888",
+        display: isToastVisible ? "block" : "none",
+        opacity,
+        transition: `opacity ${fadeTime}ms ease-in-out`,
+      }}
+    >
+      {visibleData.message}
+    </div>
+  );
+}
+
 
 export default App
